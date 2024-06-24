@@ -1,3 +1,26 @@
+export const sidebarItems = [
+    {
+        label: "Learn",
+        href: "/learn",
+        iconSrc: "/learn.svg"
+    },
+    {
+        label: "Leaderboard",
+        href: "/Leaderboard",
+        iconSrc: "/leaderboard.svg"
+    },
+    {
+        label: "quests",
+        href: "/quests",
+        iconSrc: "/quests.svg"
+    },
+    {
+        label: "shop",
+        href: "/shop",
+        iconSrc: "/shop.svg"
+    }
+]
+
 export const flags = [
     {
         image: "/es.svg",
