@@ -60,12 +60,66 @@ const main = async () => {
                 order: 1,
                 title: "Nouns"
             },
-            // {
-            //     id: 2,
-            //     unitId: 1,    
-            //     order: 2,
-            //     title: "Verbs"
-            // },
+            {
+                id: 2,
+                unitId: 1,
+                order: 2,
+                title: "Verbs"
+            },
+            {
+                id: 3,
+                unitId: 1,
+                order: 3,
+                title: "Verbs"
+            },
+            {
+                id: 4,
+                unitId: 1,
+                order: 4,
+                title: "Verbs"
+            },
+            {
+                id: 5,
+                unitId: 1,
+                order: 5,
+                title: "Verbs"
+            },
+            {
+                id: 6,
+                unitId: 1,
+                order: 6,
+                title: "Verbs"
+            },
+            {
+                id: 7,
+                unitId: 1,
+                order: 7,
+                title: "Verbs"
+            },
+            {
+                id: 8,
+                unitId: 1,
+                order: 8,
+                title: "Verbs"
+            },
+            {
+                id: 9,
+                unitId: 1,
+                order: 9,
+                title: "Verbs"
+            },
+            {
+                id: 10,
+                unitId: 1,
+                order: 10,
+                title: "Verbs"
+            },
+            {
+                id: 11,
+                unitId: 1,
+                order: 11,
+                title: "Verbs"
+            },
         ]);
 
         await db.insert(schema.challenges).values([
@@ -89,7 +143,7 @@ const main = async () => {
             },
             {
                 id: 2,
-                challengeId: 1,     
+                challengeId: 1,
                 imageSrc: "/woman.svg",
                 correct: false,
                 text: "la mujer",
@@ -97,7 +151,7 @@ const main = async () => {
             },
             {
                 id: 3,
-                challengeId: 1,     
+                challengeId: 1,
                 imageSrc: "/robot.svg",
                 correct: false,
                 text: "el robot",
