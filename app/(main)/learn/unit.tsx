@@ -32,7 +32,7 @@ const Unit = ({ id, order, title, description, lessons, activeLesson, activeLess
                             totalCount={lessons.length}
                             current={isCurrent}
                             locked={isLocked}
-                            percentage={30 || activeLessonPercentage}
+                            percentage={activeLessonPercentage}
                         />
                     )
                 })}

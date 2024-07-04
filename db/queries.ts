@@ -2,7 +2,7 @@ import { cache } from "react";
 import db from "./drizzle";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
-import { challengeProgress, challenges, courses, lessons, units, userProgress } from "./schema";
+import { challengeProgress, courses, lessons, units, userProgress } from "./schema";
 
 export const getUserProgress = cache(async () => {
     const { userId } = await auth();
@@ -48,6 +48,9 @@ export const getUnits = cache(async () => {
     //units with 'completed: boolean' property
     const normalizedData = data.map((unit) => {
         const lessonsWithCompletedStatus = unit.lessons.map((lesson) => {
+            if (lesson.challenges.length === 0) {
+                return { ...lesson, completed: false }
+            }
             const allCompletedChallenges = lesson.challenges.every((challenge) => {
                 return challenge.challengeProgress
                     && challenge.challengeProgress.length > 0
