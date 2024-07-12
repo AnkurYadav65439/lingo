@@ -16,11 +16,9 @@ const List = ({ courses, activeCourseId }: Props) => {
     const router = useRouter();
 
     const onClick = (id: number) => {
-        if (pending) return;
+        if (pending) return;      //though not needed
 
-        console.log(" list : ", id, activeCourseId)
         if (id === activeCourseId) {
-            console.log('if router')
             router.push("/learn");
         } else {
             startTransition(() => {

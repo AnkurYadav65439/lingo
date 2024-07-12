@@ -78,7 +78,7 @@ export const getCourseById = cache(async (courseId: number) => {
 });
 
 export const getCourseProgress = cache(async () => {
-    //sends first uncompleted lesson and its id
+    //sends first uncompleted lesson and its id | undefined
     const { userId } = await auth();
     const userProgress = await getUserProgress();
 
@@ -107,7 +107,7 @@ export const getCourseProgress = cache(async () => {
     });
 
     const firstUncompletedLesson = unitsInActiveCourse
-        .flatMap((unit) => unit.lessons)       //map then flat by 1 level
+        .flatMap((unit) => unit.lessons)       //map then flat by 1 level, single array of all lessons(all units)
         .find((lesson) => {                    //return 1st lesson that satisfies
             return lesson.challenges.some((challenge) => {
                 return !challenge.challengeProgress
@@ -124,7 +124,7 @@ export const getCourseProgress = cache(async () => {
 });
 
 export const getLesson = cache(async (id?: number) => {
-    //sends request lesson or first uncompleted lesson but normalized(with challenges completed property)
+    //sends request lesson or first uncompleted lesson but normalized(with challenges completed property)  | null
     const { userId } = await auth();
 
     if (!userId) {
@@ -158,10 +158,12 @@ export const getLesson = cache(async (id?: number) => {
         return null;
     }
 
+    //adding 'completed' property as well with each challenge
     const normalizedChallenges = lesson.challenges.map((challenge) => {
         const completed = challenge.challengeProgress
             && challenge.challengeProgress.length > 0
-            && challenge.challengeProgress.every((challengeProgress) => challengeProgress.completed);
+            && challenge.challengeProgress.every((challengeProgress) => challengeProgress.completed);    
+            //but it should be only one challengeprogress of each user always so length can max upto 1 and no need of every??
         return { ...challenge, completed };
     });
 

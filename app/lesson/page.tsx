@@ -1,10 +1,9 @@
 import { getLesson, getUserProgress } from "@/db/queries";
-import { challenges } from "@/db/schema";
 import { redirect } from "next/navigation";
 import Quiz from "./quiz";
 
 const LearnPage = async () => {
-    const lessonData = getLesson();   //first uncompleted lesson
+    const lessonData = getLesson();      //first uncompleted lesson | null
     const userProgressData = getUserProgress();
 
     const [lesson, userProgress] = await Promise.all([lessonData, userProgressData]);

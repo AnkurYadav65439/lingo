@@ -9,8 +9,8 @@ import Unit from './unit'
 
 const LearnPage = async () => {
     const userProgressData = getUserProgress();
+    const courseProgressData = getCourseProgress();     //gets first uncompleted lesson or undefined 
     const unitsData = getUnits();
-    const courseProgressData = getCourseProgress();
     const lessonPercentageData = getLessonPercentage();
 
     const [userProgress, units, courseProgress, lessonPercentage] = await Promise.all([userProgressData, unitsData, courseProgressData, lessonPercentageData]);

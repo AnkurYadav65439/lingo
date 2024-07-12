@@ -35,9 +35,10 @@ const Card = ({ id, text, imageSrc, shortcut, selected, onClick, status, audioSr
                 "h-full border-2 rounded-xl border-b-4 hover:bg-black/5 p-4 lg:p-6 cursor-pointer active:border-b-2",
                 selected && "border-sky-300 bg-sky-100 hover:bg-sky-100",
                 selected && status === "correct" && "border-green-300 bg-green-100 hover:bg-green-100",   //hover bg same as normal??
-                selected && status === "wrong" && "border-rose-300 bg-rose-100 hover:bg-rose-100",
+                selected && status === "wrong" && "border-rose-300 bg-rose-100 hover:bg-rose-100 ",    
                 disabled && "pointer-events-none hover:bg-white",
-                type === "ASSIST" && "lg:p-3 w-full"
+                type === "ASSIST" && "lg:p-3 w-full",
+                status === "correct" || status === "wrong" && "pointer-events-none"  //point-eve-non added by m
             )}
         >
             {audio}
