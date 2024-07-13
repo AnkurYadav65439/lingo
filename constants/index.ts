@@ -42,4 +42,6 @@ export const flags = [
         image: "/hr.svg",
         language: "Croatian"
     }
-]
+];
+
+export const pointsPerChallenge = 10;
