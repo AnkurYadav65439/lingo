@@ -46,7 +46,7 @@ const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initial
 
     const [pending, startTransition] = useTransition();
     const [hearts, setHearts] = useState(initialHearts);
-    const [percentage, setPercentage] = useState(()=>{
+    const [percentage, setPercentage] = useState(() => {
         return initialPercentage === 100 ? 0 : initialPercentage;     //for practice also
     });
     const [challenges] = useState(initialLessonChallenges);
