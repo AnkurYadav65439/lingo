@@ -8,12 +8,14 @@ import Challenge from "./challenge";
 import Footer from "./footer";
 import { reduceHearts, upsertChallengeProgress } from "@/actions/challenge-progress";
 import { toast } from "sonner";
-import { useAudio, useWindowSize } from "react-use";
+import { useAudio, useMount, useWindowSize } from "react-use";
 import Image from "next/image";
 import { pointsPerChallenge } from "@/constants";
 import { ResultCard } from "./result-card";
 import { useRouter } from "next/navigation";
 import Confetti from 'react-confetti'
+import { useHeartsModalState } from "@/store/use-hearts-modal";
+import { usePracticeModalState } from "@/store/use-practice-modal";
 
 type Props = {
     initialLessonId: number;
@@ -28,6 +30,15 @@ type Props = {
 
 const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initialPercentage, userSubscription }: Props) => {
 
+    const { open: openHeartsModal } = useHeartsModalState();
+    const { open: openPracticeModal } = usePracticeModalState();
+
+    useMount(() => {
+        if (initialPercentage === 100) {
+            openPracticeModal();
+        }
+    })
+
     const [correctAudio, _c, correctControls] = useAudio({ src: "/correct.wav" });
     const [incorrectAudio, _i, incorrectControls] = useAudio({ src: "/incorrect.wav" });
     const [finishAudio] = useAudio({ src: "/finish.mp3", autoPlay: true });
@@ -35,7 +46,9 @@ const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initial
 
     const [pending, startTransition] = useTransition();
     const [hearts, setHearts] = useState(initialHearts);
-    const [percentage, setPercentage] = useState(initialPercentage);
+    const [percentage, setPercentage] = useState(()=>{
+        return initialPercentage === 100 ? 0 : initialPercentage;     //for practice also
+    });
     const [challenges] = useState(initialLessonChallenges);
     const [activeIndex, setActiveIndex] = useState(() => {
         const uncompletedChallenge = challenges.findIndex((challenge) => !challenge.completed);
@@ -60,6 +73,7 @@ const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initial
     };
 
     const onContinue = () => {
+
         if (!selectedOption) return;   //though not trigger if this condition is true
 
         if (status === "wrong") {
@@ -87,7 +101,7 @@ const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initial
                 upsertChallengeProgress(challenge.id)
                     .then((response) => {
                         if (response?.error === "hearts") {
-                            console.error("Missing hearts");
+                            openHeartsModal();
                             return;
                         }
 
@@ -109,7 +123,7 @@ const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initial
                 reduceHearts(challenge.id)
                     .then((response) => {
                         if (response?.error === "hearts") {
-                            console.error("Missing hearts");
+                            openHeartsModal();
                             return;
                         }
 
@@ -130,8 +144,7 @@ const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initial
 
     };
 
-    //TODO: remove
-    if (true || !challenge) {
+    if (!challenge) {
         return (
             <>
                 {finishAudio}

@@ -36,7 +36,7 @@ const Footer = ({ onCheck, status, disabled, lessonId }: Props) => {
                     <Button
                         variant="default"
                         size={isMobile ? "sm" : "lg"}
-                        onClick={() => window.location.href = `/lesson/${lessonId}`}
+                        onClick={() => window.location.href = `/lesson/${lessonId}`}      //as router may not open practice modal 
                     >
                         Practice again
                     </Button>
