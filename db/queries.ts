@@ -2,7 +2,7 @@ import { cache } from "react";
 import db from "./drizzle";
 import { auth } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
-import { challengeProgress, courses, lessons, units, userProgress } from "./schema";
+import { challengeProgress, courses, lessons, units, userProgress, userSubscription } from "./schema";
 
 export const getUserProgress = cache(async () => {
     const { userId } = await auth();
@@ -162,8 +162,8 @@ export const getLesson = cache(async (id?: number) => {
     const normalizedChallenges = lesson.challenges.map((challenge) => {
         const completed = challenge.challengeProgress
             && challenge.challengeProgress.length > 0
-            && challenge.challengeProgress.every((challengeProgress) => challengeProgress.completed);    
-            //but it should be only one challengeprogress of each user always so length can max upto 1 and no need of every??
+            && challenge.challengeProgress.every((challengeProgress) => challengeProgress.completed);
+        //but it should be only one challengeprogress of each user always so length can max upto 1 and no need of every??
         return { ...challenge, completed };
     });
 
@@ -189,5 +189,34 @@ export const getLessonPercentage = cache(async () => {
 
     return percentage;
 
+});
+
+const DAY_IN_MS = 86_400_000;
+
+export const getUserSubscription = cache(async () => {
+    const { userId } = await auth();
+
+    if (!userId) {
+        return null;
+    }
+
+    const data = await db.query.userSubscription.findFirst({
+        where: eq(userSubscription.userId, userId)
+    });
+
+    if (!data) {
+        return null;
+    }
+
+    //even if data is there doesn't mean user has active subscrition
+    const isActive =
+        data.stripePriceId &&
+        data.stripeCurrentPeriodEnd?.getTime()! + DAY_IN_MS > Date.now();
+
+    //Providing 1 extra day with subscription end validity
+    return {
+        ...data,
+        isActive: !!isActive
+    }
 });
 

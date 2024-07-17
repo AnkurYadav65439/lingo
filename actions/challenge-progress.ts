@@ -93,7 +93,7 @@ export const reduceHearts = async (challengeId: number) => {
     const { userId } = await auth();
 
     if (!userId) {
-        throw new Error("Unauthorize");
+        throw new Error("Unauthorized");
     }
 
     const currentUserProgress = await getUserProgress();
