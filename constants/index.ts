@@ -45,3 +45,5 @@ export const flags = [
 ];
 
 export const pointsPerChallenge = 10;
+
+export const POINTS_TO_REFILL = 10;

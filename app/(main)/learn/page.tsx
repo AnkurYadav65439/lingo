@@ -3,7 +3,7 @@ import StickyWrapper from '@/components/shared/sticky-wrapper'
 import React from 'react'
 import Header from './header'
 import UserProgress from '@/components/shared/user-progress'
-import { getCourseProgress, getLessonPercentage, getUnits, getUserProgress } from '@/db/queries'
+import { getCourseProgress, getLessonPercentage, getUnits, getUserProgress, getUserSubscription } from '@/db/queries'
 import { redirect } from 'next/navigation'
 import Unit from './unit'
 
@@ -12,8 +12,9 @@ const LearnPage = async () => {
     const courseProgressData = getCourseProgress();     //gets first uncompleted lesson or undefined 
     const unitsData = getUnits();
     const lessonPercentageData = getLessonPercentage();
+    const userSubscriptionData = getUserSubscription();
 
-    const [userProgress, units, courseProgress, lessonPercentage] = await Promise.all([userProgressData, unitsData, courseProgressData, lessonPercentageData]);
+    const [userProgress, units, courseProgress, lessonPercentage, userSubscription] = await Promise.all([userProgressData, unitsData, courseProgressData, lessonPercentageData, userSubscriptionData]);
 
     if (!userProgress || !userProgress.activeCourse || !courseProgress) {
         redirect("/courses");
@@ -26,7 +27,7 @@ const LearnPage = async () => {
                     activeCourse={userProgress.activeCourse}
                     hearts={userProgress.hearts}
                     points={userProgress.points}
-                    hasActiveSubscription={false}
+                    hasActiveSubscription={!!userSubscription?.isActive}
                 />
             </StickyWrapper>
             <FeedWrapper>

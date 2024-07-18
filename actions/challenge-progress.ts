@@ -2,7 +2,7 @@
 
 import { pointsPerChallenge } from "@/constants";
 import db from "@/db/drizzle";
-import { getUserProgress } from "@/db/queries";
+import { getUserProgress, getUserSubscription } from "@/db/queries";
 import { challengeProgress, challenges, userProgress } from "@/db/schema";
 import { auth } from "@clerk/nextjs/server"
 import { and, eq } from "drizzle-orm";
@@ -30,6 +30,7 @@ export const upsertChallengeProgress = async (challengeId: number) => {
         throw new Error("Challenge not found");
     }
 
+    const userSubscription = await getUserSubscription();
     const lessonId = challenge.lessonId;
 
     const existingChallengeProgress = await db.query.challengeProgress.findFirst({
@@ -40,8 +41,8 @@ export const upsertChallengeProgress = async (challengeId: number) => {
     });
 
     const isPractice = !!existingChallengeProgress;     //isPractice : already completed but attempting again
-    //TODO: Not if user has a subscription
-    if (currentUserProgress.hearts === 0 && !isPractice) {
+
+    if (!userSubscription?.isActive && currentUserProgress.hearts === 0 && !isPractice) {
         return { error: "hearts" };
     }
 
@@ -89,60 +90,3 @@ export const upsertChallengeProgress = async (challengeId: number) => {
     return;
 }
 
-export const reduceHearts = async (challengeId: number) => {
-    const { userId } = await auth();
-
-    if (!userId) {
-        throw new Error("Unauthorized");
-    }
-
-    const currentUserProgress = await getUserProgress();
-
-    if (!currentUserProgress) {
-        throw new Error("User progress not found");
-    }
-
-    //TODO: Get user subscription
-
-    const challenge = await db.query.challenges.findFirst({
-        where: eq(challenges.id, challengeId)
-    });
-
-    if (!challenge) {
-        throw new Error("Challenge not found");
-    }
-
-    const lessonId = challenge.lessonId;
-
-    const existingChallengeProgress = await db.query.challengeProgress.findFirst({
-        where: and(
-            eq(challengeProgress.userId, userId),
-            eq(challengeProgress.challengeId, challengeId)
-        )
-    });
-
-    const isPractice = !!existingChallengeProgress;
-
-    if (isPractice) {
-        return { error: "practice" }
-    }
-
-    //TODO: Handle subscription
-
-    if (currentUserProgress.hearts === 0) {
-        return { error: "hearts" }
-    }
-
-    await db.update(userProgress).set({
-        hearts: Math.max(currentUserProgress.hearts - 1, 0)      //though not needed, handle above already for 0 hearts
-    }).where(
-        eq(userProgress.userId, userId)
-    );
-
-    revalidatePath("/learn");
-    revalidatePath("/shop");
-    revalidatePath("/quests");
-    revalidatePath("/leaderboard");
-    revalidatePath("/learn");
-    revalidatePath(`/lesson/${lessonId}`);
-}

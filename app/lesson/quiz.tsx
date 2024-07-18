@@ -1,12 +1,12 @@
 'use client'
 
-import { challengeOptions, challenges } from "@/db/schema";
+import { challengeOptions, challenges, userSubscription } from "@/db/schema";
 import Header from "./header";
 import { useState, useTransition } from "react";
 import QuestionBubble from "./question-bubble";
 import Challenge from "./challenge";
 import Footer from "./footer";
-import { reduceHearts, upsertChallengeProgress } from "@/actions/challenge-progress";
+import { upsertChallengeProgress } from "@/actions/challenge-progress";
 import { toast } from "sonner";
 import { useAudio, useMount, useWindowSize } from "react-use";
 import Image from "next/image";
@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import Confetti from 'react-confetti'
 import { useHeartsModalState } from "@/store/use-hearts-modal";
 import { usePracticeModalState } from "@/store/use-practice-modal";
+import { reduceHearts } from "@/actions/user-progress";
 
 type Props = {
     initialLessonId: number;
@@ -25,7 +26,9 @@ type Props = {
     })[];
     initialHearts: number;
     initialPercentage: number;
-    userSubscription: any;    //TODO subscription db type
+    userSubscription: typeof userSubscription.$inferSelect & {
+        isActive: boolean;
+    } | null;
 };
 
 const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initialPercentage, userSubscription }: Props) => {
@@ -205,7 +208,7 @@ const Quiz = ({ initialLessonId, initialLessonChallenges, initialHearts, initial
             <Header
                 hearts={hearts}
                 percentage={percentage}
-                hasActiveSubscription={false}
+                hasActiveSubscription={!!userSubscription?.isActive}
             />
             <div className="flex-1">
                 <div className="h-full flex items-center justify-center">

@@ -50,7 +50,7 @@ const ShopPage = async () => {
                     />
                 </div>
             </FeedWrapper>
-        </div >
+        </div>
     )
 }
 
