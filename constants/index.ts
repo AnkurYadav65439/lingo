@@ -6,7 +6,7 @@ export const sidebarItems = [
     },
     {
         label: "Leaderboard",
-        href: "/Leaderboard",
+        href: "/leaderboard",
         iconSrc: "/leaderboard.svg"
     },
     {
