@@ -45,7 +45,7 @@ const LeaderboardPage = async () => {
                     <p className="text-muted-foreground text-center text-lg">
                         See where you stand among other learners in the community.
                     </p>
-                    <Separator className="mb-4 h-0.5 rounded-full" />
+                    <Separator className="my-4 h-0.5 rounded-full" />
                     {leaderboard.map((userProgress, index) => (
                         <div
                             key={userProgress.userId}
